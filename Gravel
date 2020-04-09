@@ -1,0 +1,60 @@
+import java.io.*;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Main {
+//fenwick tree f=with range update and poit query
+    public static void main(String[] args) throws IOException {
+	// write your code here
+        String line;
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter pw  = new PrintWriter(new OutputStreamWriter(System.out));
+        StringTokenizer st;
+        while ((line=br.readLine())!=null&&!line.equals("")){
+                st = new StringTokenizer(line);
+                int n = Integer.parseInt(st.nextToken());
+                int m = Integer.parseInt(st.nextToken());
+                int c = Integer.parseInt(st.nextToken());
+                FenwickTree ft = new FenwickTree(n);
+              //  pw.println(Arrays.toString(ft.arr));
+                ft.range_add(1,n,c);
+                for (int i=0;i<m;i++){
+                    st = new StringTokenizer(br.readLine());
+                   if (st.nextToken().equals("S")){
+                       int u = Integer.parseInt(st.nextToken());
+                       int v = Integer.parseInt(st.nextToken());
+                       long k = Long.parseLong(st.nextToken());
+                      // pw.println(Arrays.toString(ft.arr));
+                       ft.range_add(u,v,k);
+                   }else{
+                       int p = Integer.parseInt(st.nextToken());
+                       pw.println(ft.point_query(p));
+                   }
+                }
+
+        }
+        pw.flush();
+    }
+    static class FenwickTree{
+        long [] arr;
+        int N ;
+        FenwickTree(int n){
+            N= n;
+            arr = new long[N+1];
+        }
+        void  add(int idx,long val){
+            for (;idx<arr.length;idx+=(idx&-idx))
+                arr[idx]+=val;
+        }
+        void range_add(int l,int r,long val){
+            add(l,val);
+            add(r+1,-val);
+        }
+        long point_query(int idx){
+            long ret =0;
+            for (;idx>0;idx-=(idx&-idx))
+                ret+=arr[idx];
+            return ret;
+        }
+    }
+}
