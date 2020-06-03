@@ -1,0 +1,63 @@
+import java.io.*;
+
+import java.math.*;
+import java.util.*;
+
+
+
+public class Main {
+
+    static MyScanner ob = new MyScanner();
+    static   PrintWriter pw = new PrintWriter(new OutputStreamWriter(System.out));
+    static int N ,T;
+    static int [] A;
+    static int n;
+    static int max = 1000000;
+    //max int
+    static int [] primes = new int[max+1];
+    static int [][] BIT = new int[6][max+1];
+    public static void main(String args[]) throws IOException {
+        //iterate thorugh all mutiples of prime unu,ebr less than N
+        for(long p=2;p<=max;p++){
+            if(primes[(int)p]==0){
+                for(long j =p*2;j<=max;j+=p){
+                    primes[(int)j]++;
+                }
+                primes[(int)p]++;
+            }
+            if(primes[(int)p]<=5)
+            update(primes[(int)p], (int)p);       
+        }
+        //the query
+        int q = ob.nextInt();
+        while(q-->0){
+            int l = ob.nextInt();
+            int r = ob.nextInt();
+            int k= ob.nextInt();
+            pw.println(query(k, l, r));
+        }
+        pw.flush();
+
+    }
+    static int lsb(int i){
+        return i&-i;
+    }
+    static void update(int y,int x){
+        while(x<=max){
+            BIT[y][x]+=1;
+            x+=lsb(x);
+        }
+    }
+    static long prefix(int y, int idx){
+        long val = 0;
+        while(idx>0){
+            val+=BIT[y][idx];
+            idx-=lsb(idx);
+        }
+        return val;
+    }
+    static long query(int y,int l,int r){
+        return prefix(y, r)-prefix(y, l-1);
+    }
+    
+  
